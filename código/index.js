@@ -19,10 +19,11 @@ function operation() {
             'Depositar',
             'Sacar',
             'Sair',
-        ]
+        ],
     },
     ]).then((answer) => {
         const action = answer['action']
+
         if (action === 'Criar conta') {
             createaccount()
         } else if (action === 'Consular Saldo') {
@@ -57,7 +58,7 @@ function buildaccount() {
     },
     ]).then((answer) => {
         const accountname = answer['accountname']
-        console.info(accountname)
+        console.info(answer['accountname'])
 
         if(!fs.existsSync('accounts')) {
             fs.mkdirSync('accounts')
@@ -84,24 +85,22 @@ function deposit() {
     inquirer.prompt([
         {
             name: 'accountname',
-            message: 'Informe o nome da sua conta'
+            message: 'Informe o nome da conta',
         },
-    ]).then((answer) => {
-        const accountname = answer['accoutname']
+    ])
+    .then((answer) => {
+        const accountname = answer['accountname']
 
-        if (checkAccount(accountname)) {
-            console.log('fim')
+        if (!checkAccount(accountname)) {
+            return deposit()
         }
     })
 }
 
-
-// Checando se a conta existe
 function checkAccount(accountname) {
     if (!fs.existsSync(`accounts/${accountname}.json`)) {
-      console.log(chalk.bgRed.black('Esta conta não existe, escolha outro nome!'))
-      return deposit()
-    } else {
-        console.log('esfilubaesouybf aesjkfi')
+        console.log(chalk.bgRed.black('Esta conta não existe, Tente novamente'))
+        return false
     }
-  }
+    return true
+}
